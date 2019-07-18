@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import * as actionTypes from '../../store/action';
 
 import CounterControl from '../../components/CounterControl/CounterControl';
 import CounterOutput from '../../components/CounterOutput/CounterOutput';
 
 class Counter extends Component {
     state = {
-        counter: 0
+        counter: 0,
     }
 
     counterChangedHandler = ( action, value ) => {
@@ -35,6 +36,13 @@ class Counter extends Component {
                 <CounterControl label="Add 5" clicked={this.props.onFiveIncrementCounter}  />
                 <CounterControl label="Subtract 5" clicked={this.props.onFiveDecrementCounter}  />
                 <CounterControl label="Set to 0" clicked={this.props.setToZero} />
+                <hr />
+                <button onClick={() => this.props.onStoreResult(this.props.ctr)}>Store Results</button>
+                <ul>
+                    {this.props.storedResults.map(result => (
+                        <li key={result.id} onClick={() => this.props.onDeleteResult(result.id)}>{result.value}</li>
+                    ))}
+                </ul>
             </div>
         );
     }
@@ -42,17 +50,20 @@ class Counter extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        ctr: state.counter      //counter comes from reducer. this is our global state
+        ctr: state.ctr.counter,      //counter comes from reducer. this is our global state
+        storedResults: state.res.results,
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        onIncrementCounter: () => dispatch({type: 'INCREMENT', value: 1}),
-        onFiveIncrementCounter: () => dispatch({type: 'INCREMENT_FIVE', value: 1}),
-        onDecrementCoutner: () => dispatch({type: 'DECREMENT', value: 5}),
-        onFiveDecrementCounter: () => dispatch({type: 'DECREMENT_FIVE', value: 5}),
-        setToZero: () => dispatch({type: 'ZERO_OUT', value: 0})
+        onIncrementCounter: () => dispatch({type: actionTypes.INC , value: 1}),
+        onFiveIncrementCounter: () => dispatch({type: actionTypes.INC_5, value: 5}),
+        onDecrementCoutner: () => dispatch({type: actionTypes.DEC, value: 1}),
+        onFiveDecrementCounter: () => dispatch({type: actionTypes.DEC_5, value: 5}),
+        setToZero: () => dispatch({type: actionTypes.ZERO, value: 0}),
+        onStoreResult: (result) => dispatch({type: actionTypes.STORE, result: result}),
+        onDeleteResult: (id) => dispatch({type: actionTypes.DELETE, resultId: id})
     };
 };
 
