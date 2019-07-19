@@ -9,9 +9,11 @@ export const saveResult = (result) => {
 
 export const storeResult = (result) => {
     //this is thunk
-    return function(dispatch) {
+    return function(dispatch, getState) {
         //this is where we would send fetch request
         setTimeout(() => {
+            // const oldCounter = getState().ctr.counter;
+            // console.log(oldCounter);
             dispatch(saveResult(result));
         }, 2000);
     }

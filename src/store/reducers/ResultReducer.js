@@ -1,27 +1,23 @@
 import * as actionTypes from '../actions/ActionTypes';
+import {updateObject} from '../utility';
 
 const initialState = {
     results: [],
+}
+
+const deleteResult = (state, action) => {
+    const updatedArray = state.results.filter(result => result.id !== action.resultId);
+    return updateObject(state, {results: updatedArray}); 
 }
 
 const resultReducer = (state = initialState, action) => {
 
     switch(action.type){
         case actionTypes.STORE:
-            return {
-                ...state,
-                results: state.results.concat({id: new Date(), value: action.result})       //concat returns new array which is old array + argurment passes to concat
-            };
+            return updateObject(state, {results: state.results.concat({id: new Date(), value: action.result})});
 
         case actionTypes.DELETE:
-            // const id = 2;
-            // const newArray = [...state.results];
-            // newArray.splice(id, 1);
-            const updatedArray = state.results.filter(result => result.id !== action.resultId);
-            return{
-            ...state,
-                results: updatedArray
-            };
+            return deleteResult(state, action);
     }
     return state;
 }
